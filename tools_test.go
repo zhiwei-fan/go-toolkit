@@ -5,6 +5,7 @@ import (
 	"image"
 	"image/png"
 	"io"
+	"io/ioutil"
 	"mime/multipart"
 	"net/http"
 	"net/http/httptest"
@@ -152,12 +153,12 @@ func TestTools_UploadOneFile(t *testing.T) {
 func TestTools_CreateDirIfNotExist(t *testing.T) {
 	var testTool Tools
 
-	err := testTool.CreateDirIfNotExists("./testdata/myDir")
+	err := testTool.CreateDirIfNotExist("./testdata/myDir")
 	if err != nil {
 		t.Error(err)
 	}
 
-	err = testTool.CreateDirIfNotExists("./testdata/myDir")
+	err = testTool.CreateDirIfNotExist("./testdata/myDir")
 	if err != nil {
 		t.Error(err)
 	}
@@ -179,10 +180,10 @@ var slugTests = []struct {
 }
 
 func TestTools_Slugify(t *testing.T) {
-	var testTools Tools
+	var testTool Tools
 
 	for _, e := range slugTests {
-		slug, err := testTools.Slugify(e.s)
+		slug, err := testTool.Slugify(e.s)
 		if err != nil && !e.errorExpected {
 			t.Errorf("%s: error received when none expected: %s", e.name, err.Error())
 		}
@@ -204,7 +205,16 @@ func TestTools_DownloadStaticFile(t *testing.T) {
 	res := rr.Result()
 	defer res.Body.Close()
 
-	if res.Header["Content-Length"][0] != "100" {
-		t.Error("wrong content length of", res.Header["Content-Lenth"][0])
+	if res.Header["Content-Length"][0] != "98827" {
+		t.Error("wrong content length of", res.Header["Content-Length"][0])
+	}
+
+	if res.Header["Content-Disposition"][0] != "attachment; filename=\"puppy.jpg\"" {
+		t.Error("wrong content disposition")
+	}
+
+	_, err := ioutil.ReadAll(res.Body)
+	if err != nil {
+		t.Error(err)
 	}
 }

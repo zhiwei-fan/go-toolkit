@@ -74,7 +74,7 @@ func (t *Tools) UploadFiles(r *http.Request, uploadDir string, rename ...bool) (
 		t.MaxFileSize = 1024 * 1024 * 1024
 	}
 
-	err := t.CreateDirIfNotExists(uploadDir)
+	err := t.CreateDirIfNotExist(uploadDir)
 	if err != nil {
 		return nil, err
 	}
@@ -157,7 +157,7 @@ func (t *Tools) UploadFiles(r *http.Request, uploadDir string, rename ...bool) (
 }
 
 // CreateDirIfNotExist creates a directory, and all necessary parents, if it does not exist
-func (t *Tools) CreateDirIfNotExists(path string) error {
+func (t *Tools) CreateDirIfNotExist(path string) error {
 	const mode = 0755
 	if _, err := os.Stat(path); os.IsNotExist(err) {
 		err := os.MkdirAll(path, mode)
@@ -182,8 +182,8 @@ func (t *Tools) Slugify(s string) (string, error) {
 	return slug, nil
 }
 
-// DownloadStaticFile downloads a file, and tries to force the browser to avoid displaying it 
-// in the browser window by setting content disposition. It also allows specification of the 
+// DownloadStaticFile downloads a file, and tries to force the browser to avoid displaying it
+// in the browser window by setting content disposition. It also allows specification of the
 // display name
 func (t *Tools) DownloadStaticFile(w http.ResponseWriter, r *http.Request, p, file, displayName string) {
 	fp := path.Join(p, file)
