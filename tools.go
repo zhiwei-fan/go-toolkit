@@ -14,7 +14,7 @@ import (
 const randomStringSource = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_+"
 
 // Tools is the type used to instantiate this module. Any variable of this type will have access
-// to all the methods with the reciever *Tools
+// to all the methods with the receiver *Tools
 type Tools struct {
 	MaxFileSize int
 	AllowedFileTypes []string
@@ -72,7 +72,13 @@ func (t *Tools) UploadFiles(r *http.Request, uploadDir string, rename ...bool) (
 		t.MaxFileSize = 1024 * 1024 * 1024
 	}
 
-	err := r.ParseMultipartForm(int64(t.MaxFileSize))
+	err := t.CreateDirIfNotExists(uploadDir)
+	if err != nil {
+		return nil, err
+	}
+
+
+	err = r.ParseMultipartForm(int64(t.MaxFileSize))
 	if err != nil {
 		return nil, errors.New("the uploaded file is too big")
 	}
@@ -148,4 +154,16 @@ func (t *Tools) UploadFiles(r *http.Request, uploadDir string, rename ...bool) (
 		}
 	}
 	return uploadedFiles, nil
+}
+
+// CreateDirIfNotExist creates a directory, and all necessary parents, if it does not exist
+func (t *Tools) CreateDirIfNotExists(path string) error {
+	const mode = 0755
+	if _, err := os.Stat(path); os.IsNotExist(err) {
+		err := os.MkdirAll(path, mode)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
 }
