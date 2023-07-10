@@ -257,13 +257,13 @@ func (t *Tools) ReadJSON(w http.ResponseWriter, r *http.Request, data interface{
 
 	err = dec.Decode(&struct{}{})
 	if err != io.EOF {
-		return errors.New("body must contain only one JSON values")
+		return errors.New("body must contain only one JSON value")
 	}
 
 	return nil
 }
 
-// WriteJSON takes a response status code adn arbitrary data and writes json to the client
+// WriteJSON takes a response status code and arbitrary data and writes json to the client
 func (t *Tools) WriteJSON(w http.ResponseWriter, status int, data interface{}, headers ...http.Header) error {
 	out, err := json.Marshal(data)
 	if err != nil {
@@ -285,7 +285,7 @@ func (t *Tools) WriteJSON(w http.ResponseWriter, status int, data interface{}, h
 	return nil
 }
 
-// Error JSON takes an error, and optionally a status code, and generates and sends a JSON error message
+// ErrorJSON takes an error, & optionally a status code, and generates and sends a JSON error message
 func (t *Tools) ErrorJSON(w http.ResponseWriter, err error, status ...int) error {
 	statusCode := http.StatusBadRequest
 
@@ -300,7 +300,7 @@ func (t *Tools) ErrorJSON(w http.ResponseWriter, err error, status ...int) error
 	return t.WriteJSON(w, statusCode, payload)
 }
 
-// PushJSONToRemote posts arbitrary data to some URL as JSON, and returns the response, status code, and error if any
+// PushJSONToRemote posts arbitrary data to some URL as JSON, and returns the response, status code, and error, if any.
 // The final parameter - client - is optional. If none is specified, we use the standard http.Client.
 func (t *Tools) PushJSONToRemote(uri string, data interface{}, client ...*http.Client) (*http.Response, int, error) {
 	// create json
