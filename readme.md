@@ -16,4 +16,4 @@ The included tools are:
 
 ## Installation
 
-`go get -u github.com/zhiwei-fan/toolkit`
+`go get -u github.com/zhiwei-fan/go-toolkit`
